@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"log"
 	"os"
+	"slices"
 	"sort"
 	"strconv"
 	"strings"
@@ -89,7 +90,6 @@ func LoadArrayD2() [][]int {
 	}
 	return nestedarray
 }
-
 func withinrangeminus(i int, x int) bool {
 	switch {
 	case i-1 == x:
@@ -115,7 +115,6 @@ func withinrangemas(i int, x int) bool {
 		return false
 	}
 }
-
 func Day2p1(list [][]int) int {
 	var isSafe = 0
 	for _, value := range list {
@@ -146,41 +145,76 @@ func Day2p1(list [][]int) int {
 	return isSafe
 
 }
-
 func Day2p2(list [][]int) int {
 	var isSafe = 0
-	for _, value := range list {
-		tolerance := 0
+	for index, value := range list {
+		c := isSafe
 		if withinrangemas(value[0], value[1]) {
+			var brkindx int
 			for i, v := range value {
 				if i >= len(value)-1 {
 					isSafe++
 					break
 				}
 				if !withinrangemas(v, value[i+1]) {
-					tolerance++
-				}
-				if tolerance >= 1 {
+					brkindx = i + 1
 					break
+				}
+			}
+			if c == isSafe {
+				reval := value
+				reval = append(reval[:brkindx], reval[brkindx+1:]...)
+				for i, v := range reval {
+					if i >= len(reval)-1 {
+						isSafe++
+						break
+					}
+					if !withinrangemas(v, reval[i+1]) {
+						break
+					}
 				}
 			}
 		}
 		if withinrangeminus(value[0], value[1]) {
+			var brkindx int
 			for i, v := range value {
 				if i >= len(value)-1 {
 					isSafe++
 					break
 				}
 				if !withinrangeminus(v, value[i+1]) {
-					tolerance++
-				}
-				if tolerance >= 1 {
+					brkindx = i + 1
 					break
 				}
+
 			}
+			if c == isSafe {
+				reval := value
+				reval = append(reval[:brkindx], reval[brkindx+1:]...)
+				for i, v := range reval {
+					if i >= len(reval)-1 {
+						isSafe++
+						break
+					}
+					if !withinrangeminus(v, reval[i+1]) {
+						break
+					}
+				}
+			}
+		}
+		if index == -1 {
+			log.Println("impossible")
 		}
 
 	}
 	return isSafe
+
+}
+
+func TestingSlices(list [][]int) {
+
+	log.Printf("for index 7: %v", slices.IsSorted(list[7]))
+	slices.Reverse(list[7])
+	log.Printf("for index 8: %v", list[7])
 
 }

@@ -54,5 +54,8 @@ func TestDay2(t *testing.T) {
 		dis := Day2p2(nestedarray)
 		t.Log("Test run value", dis)
 	})
+	t.Run("Slices testing", func(t *testing.T) {
+		TestingSlices(nestedarray)
+	})
 
 }
